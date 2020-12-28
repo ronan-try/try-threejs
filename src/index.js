@@ -13,13 +13,17 @@ const camera = new THREE.PerspectiveCamera(
 );
 camera.position.z = 5;
 // 3. renderer
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer( { antialias: true } );
 renderer.setSize(window.innerWidth, window.innerWidth);
 document.body.appendChild(renderer.domElement);
 
 // to do
 const geometry = new THREE.BoxGeometry();
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+// 
+const texture = new THREE.TextureLoader().load('gltf/pony_cartoon/textures/Body_SG1_metallicRoughness.png')
+// const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+const material = new THREE.MeshBasicMaterial({ map: texture });
+
 // # obj
 const cube = new THREE.Mesh(geometry, material);
 

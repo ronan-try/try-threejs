@@ -2,56 +2,46 @@ import * as THREE from 'three';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
-/**
- * 创建文字
- * https://threejs.org/docs/index.html#manual/zh/introduction/Creating-text
- */
-
-{
-  const div = document.createElement('div');
-  div.id = 'info';
-  div.textContent = 'Description';
-  Object.assign(div.style, {
-    position: 'absolute',
-    top: '10px',
-    width: '100%',
-    textAlign: 'center',
-    zIndex: 100,
-    display: 'block'
-  });
-  document.body.appendChild(div);
-}
-
+// 1. scene
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xcfcfcf);
-
+// 2. camera
 const camera = new THREE.PerspectiveCamera(
-  75, window.innerWidth / window.innerHeight, 0.1, 1000
+  75,
+  window.innerWidth / window.innerWidth,
+  0.1,
+  1000
 );
-camera.position.set(0, 100, 150);
-
-const ambient = new THREE.AmbientLight(0xffffff, 0.1);
-scene.add(ambient);
-
+camera.position.z = 5;
+// 3. renderer
 const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setSize(window.innerWidth, window.innerWidth);
 document.body.appendChild(renderer.domElement);
 
+// to do
+const geometry = new THREE.BoxGeometry();
+const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+// # obj
+const cube = new THREE.Mesh(geometry, material);
 
-const loader = new GLTFLoader();
-const dracoLoader = new DRACOLoader();
-dracoLoader.setDecoderPath('/examples/js/libs/draco/');
-loader.setDRACOLoader(dracoLoader);
+scene.add(cube);
 
-loader.load(
-  './gltf/pony_cartoon/scene.gltf',
-  gltf => {
-    scene.add(gltf.scene);
-  },
-  xhr => {
-    console.log(xhr.loaded / xhr.total)
-  },
-  error => {
-    console.log('110');
-    console.error(error);
-  })
+function animate () {
+  requestAnimationFrame(animate);
+
+  cubeMove();
+  renderer.render(scene, camera);
+}
+animate();
+
+// 立方体动起来
+function cubeMove() {
+  cube.rotation.x += 0.01;
+  cube.rotation.y += 0.01;
+}
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+
+  renderer.setSize(window.innerWidth, window.innerHeight);
+})
